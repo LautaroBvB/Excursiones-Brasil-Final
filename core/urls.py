@@ -10,7 +10,6 @@ urlpatterns = [
     path("preguntas_frecuentes/", views.faq, name="faq"),
     path("mis_compras/", views.mis_compras, name="mis_compras"),
     path("politicas/", views.politicas, name="politicas"),
-    path("checkout/opciones/", views.checkout_opciones, name="checkout_opciones"),
-    path("checkout/procesar/", views.checkout_procesar, name="checkout_procesar"),
-    path("checkout/success/", views.checkout_success, name="checkout_success"),
+    path("opciones_de_pago", views.pago_opciones, name="opciones_de_pago"),
+    path("pago_exitoso/", views.pago_exitoso, name="pago_exitoso"),
 ]

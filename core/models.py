@@ -107,6 +107,7 @@ class Compra(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, choices=ESTADOS, default="pendiente")
     email = models.EmailField(blank=True, null=True)
+    otro = models.CharField(max_length=255, blank=True, null=True)
 
 
     medio_pago = models.CharField(

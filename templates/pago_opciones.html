@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Opciones de pago" %}{% endblock %}
+
+{% block content %}
+<div id="main">
+  <div class="inner">
+    <header id="header">
+      <a href="#" class="logo"><strong>Opciones de pago</strong> / Excursiones Brasil</a>
+    </header>
+
+    <h3 style="margin-top: 4vh">Seleccione su país:</h3>
+    <form method="post">
+      {% csrf_token %}
+      <div class="row gtr-uniform">
+
+        <div class="col-12">
+          <select name="pais" id="pais" required>
+            <option value="argentina">Argentina</option>
+            <option value="brasil">Brasil</option>
+            <option value="mundo">Resto del mundo</option>
+          </select>
+        </div>
+
+        <!-- nuevos selects para resto del mundo -->
+        <div class="col-12" id="selects-mundo" style="display:none;">
+          <div class="row gtr-uniform">
+            <div class="col-6 col-12-small">
+              <label for="continente">Continente:</label>
+              <select name="continente" id="continente">
+                <option value="europa">Europa</option>
+                <option value="asia">Asia</option>
+                <option value="africa">África</option>
+              </select>
+            </div>
+            <div class="col-6 col-12-small">
+              <label for="pais_mundo">País:</label>
+              <select name="pais_mundo" id="pais_mundo">
+                <!-- se llenará dinámicamente -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Radios -->
+        <div id="metodos">
+          <div class="col-4 col-12-small">
+            <input type="radio" id="enlace_pago" name="medio_pago" value="stripe" checked>
+            <label for="enlace_pago">Enlace de pago</label>
+          </div>
+
+          <div class="col-4 col-12-small metodo-transfer">
+            <input type="radio" id="transferencia" name="medio_pago" value="transferencia">
+            <label for="transferencia">Transferencia (Descuento del 10%)</label>
+          </div>
+        </div>
+
+        <div class="col-12 col-12-small">
+          <hr>
+          <h4>Total a pagar:</h4>
+          <h3 id="total">${{ subtotal|floatformat:2 }}</h3>
+        </div>
+
+        <div class="col-12">
+          <ul class="actions">
+            <li>
+              <input type="submit" value="Continuar" class="primary{% if subtotal == 0 %} disabled{% endif %}">
+            </li>
+          </ul>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const pais = document.getElementById("pais");
+    const transferenciaRadio = document.querySelector(".metodo-transfer");
+    const totalEl = document.getElementById("total");
+    const enlacePago = document.getElementById("enlace_pago");
+    const transferencia = document.getElementById("transferencia");
+    const montoBase = parseFloat("{{ subtotal|floatformat:2 }}");
+    const descuento = 0.90; // 10% descuento
+
+    const selectsMundo = document.getElementById("selects-mundo");
+    const continenteSel = document.getElementById("continente");
+    const paisMundoSel = document.getElementById("pais_mundo");
+
+    const paisesPorContinente = {
+      europa: ["España", "Francia", "Italia"],
+      asia: ["Japón", "China", "India"],
+      africa: ["Egipto", "Sudáfrica", "Marruecos"]
+    };
+
+    function actualizarPaises() {
+      const cont = continenteSel.value;
+      paisMundoSel.innerHTML = "";
+      paisesPorContinente[cont].forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p.toLowerCase();
+        opt.textContent = p;
+        paisMundoSel.appendChild(opt);
+      });
+    }
+
+    function actualizarTotal() {
+      if (transferencia.checked) {
+        totalEl.textContent = "$" + (montoBase * descuento).toFixed(2);
+      } else {
+        totalEl.textContent = "$" + montoBase.toFixed(2);
+      }
+    }
+
+    function actualizarOpciones() {
+      if (pais.value === "mundo") {
+        transferenciaRadio.style.display = "none";
+        enlacePago.checked = true;
+        selectsMundo.style.display = "block";
+        actualizarPaises();
+      } else {
+        transferenciaRadio.style.display = "block";
+        selectsMundo.style.display = "none";
+      }
+      actualizarTotal();
+    }
+
+    pais.addEventListener("change", actualizarOpciones);
+    enlacePago.addEventListener("change", actualizarTotal);
+    transferencia.addEventListener("change", actualizarTotal);
+    continenteSel.addEventListener("change", actualizarPaises);
+
+    actualizarOpciones();
+  });
+</script>
+{% endblock %}

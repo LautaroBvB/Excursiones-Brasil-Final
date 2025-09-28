@@ -89,9 +89,6 @@ def carrito(request):
     productos = carrito.items.count()
     unidades = sum(i.cantidad for i in items)
 
-    # flag para permitir acceso a checkout_opciones
-    request.session['from_cart'] = True
-
     return render(request, "carrito.html", {
         "items": items,
         "totales": {"subtotal": subtotal, "productos": productos, "unidades": unidades},
@@ -166,105 +163,102 @@ def politicas(request):
 
 
 
-# Prueba
+# configurando metodos de pago
 @login_required
-def checkout_opciones(request):
-    if not request.session.pop('from_cart', False):
-        return JsonResponse({"error": "Acceso inválido"}, status=400)
-
+def pago_opciones(request):
     carrito, _ = Carrito.objects.get_or_create(usuario=request.user)
-    subtotal, _, _ = _totales_carrito(carrito)
-    return render(request, "checkout_opciones.html", {"subtotal": subtotal})
+    qs = (carrito.items
+          .select_related('paquete')
+          .annotate(item_total=ExpressionWrapper(
+              F('cantidad') * F('paquete__precio'),
+              output_field=DecimalField(max_digits=12, decimal_places=2)
+          )))
+    subtotal = sum((i.item_total for i in qs), Decimal('0'))
 
+    if request.method == 'POST':
+        pais = request.POST.get('pais')
+        medio = request.POST.get('medio_pago')
 
+        if medio == 'stripe':
+            stripe.api_key = settings.STRIPE_SECRET_KEY
 
-@login_required
-def checkout_procesar(request):
-    pais = request.POST.get("pais")
-    medio = request.POST.get("medio_pago")
+            # crear línea de items para stripe
+            line_items = []
+            for it in qs:
+                line_items.append({
+                    'price_data': {
+                        'currency': 'usd',  # o 'ars' si corresponde
+                        'unit_amount': int(it.paquete.precio * 100),  # en centavos
+                        'product_data': {
+                            'name': it.paquete.nombre,
+                        },
+                    },
+                    'quantity': it.cantidad,
+                })
 
-    carrito, _ = Carrito.objects.get_or_create(usuario=request.user)
-    subtotal, _, _ = _totales_carrito(carrito)
-
-    # ---------- Transferencia ----------
-    if medio == "transferencia":
-        if pais not in ["argentina", "brasil"]:
-            return JsonResponse({"error": "Transferencia no disponible"}, status=400)
-
-        compra = Compra.objects.create(
-            usuario=request.user,
-            email=request.user.email,
-            total=subtotal * Decimal("0.85"),  # aplica el 15% desc
-            medio_pago=f"transferencia_{pais}",
-            estado="pendiente",
-            opcion_pais=pais,
-        )
-
-        # copiar ítems
-        for item in carrito.items.all():
-            CompraItem.objects.create(
-                compra=compra,
-                paquete=item.paquete,
-                salida=item.salida,
-                cantidad=item.cantidad,
-                precio_unitario=item.paquete.precio,
+            checkout_session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=line_items,
+                mode='payment',
+                success_url=request.build_absolute_uri(
+                    reverse('pago_exitoso')
+                ) + '?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=request.build_absolute_uri(
+                    reverse('carrito')
+                ),
+                customer_email=request.user.email,
             )
-        carrito.delete()
 
-    # ---------- Stripe ----------
+            return redirect(checkout_session.url)
+
+        # aquí podrías manejar transferencias si querés…
+
+    return render(request, "pago_opciones.html", {"subtotal": subtotal})
+
+def pago_exitoso(request):
+    session_id = request.GET.get('session_id')
+    if not session_id:
+        return HttpResponse("Falta session_id", status=400)
+
+    # opcional: verificar en Stripe
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    session = stripe.checkout.Session.retrieve(session_id)
+
+    # si querés asegurarte que el pago está 'paid':
+    if session.payment_status != "paid":
+        return HttpResponse("Pago no confirmado aún", status=400)
+
+    # datos del carrito
+    carrito = request.user.carrito
+    items = list(carrito.items.select_related('paquete'))
+
+    if not items:
+        return HttpResponse("Carrito vacío", status=400)
+
+    subtotal = sum(it.paquete.precio * it.cantidad for it in items)
+
+    # crear Compra
     compra = Compra.objects.create(
         usuario=request.user,
         email=request.user.email,
         total=subtotal,
+        estado="aprobado",
         medio_pago="stripe",
-        estado="pendiente",
-        opcion_pais=pais,
+        opcion_pais="mundo",  # o guardá lo que enviaste antes
+        referencia_externa=session.id,  # id de stripe
     )
-    for item in carrito.items.all():
+
+    # crear CompraItem por cada item del carrito
+    for it in items:
         CompraItem.objects.create(
             compra=compra,
-            paquete=item.paquete,
-            salida=item.salida,
-            cantidad=item.cantidad,
-            precio_unitario=item.paquete.precio,
+            paquete=it.paquete,
+            salida=it.salida,
+            cantidad=it.cantidad,
+            precio_unitario=it.paquete.precio,
         )
 
-    session = stripe.checkout.Session.create(
-        customer_email=request.user.email,
-        payment_method_types=["card"],
-        line_items=[{
-            "price_data": {
-                "currency": "usd",
-                "product_data": {"name": "Excursiones Brasil"},
-                "unit_amount": int(subtotal * 100),
-            },
-            "quantity": 1,
-        }],
-        mode="payment",
-        success_url=request.build_absolute_uri(
-            reverse("checkout_success") + f"?compra_id={compra.id}"
-        ),
-        cancel_url=request.build_absolute_uri(reverse("checkout_opciones")),
-    )
+    # vaciar carrito
+    carrito.items.all().delete()
 
-    compra.referencia_externa = session.id
-    compra.save()
-
-    return redirect(session.url, code=303)
-
-
-# Esta función realiza los movimientos posteriores a la compra exitosa
-@login_required
-def checkout_success(request):
-    compra_id = request.GET.get("compra_id")
-    compra = Compra.objects.filter(id=compra_id, usuario=request.user).first()
-    if not compra:
-        return HttpResponse("Compra no encontrada", status=404)
-
-    compra.estado = "aprobado"
-    compra.save()
-
-    # limpiar carrito (si aún existe)
-    Carrito.objects.filter(usuario=request.user).delete()
-
-    return HttpResponse("Pago realizado con éxito ✅")
+    return HttpResponse("Pago realizado con éxito. ¡Gracias por tu compra!")
