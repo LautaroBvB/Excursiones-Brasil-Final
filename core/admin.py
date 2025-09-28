@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Itinerario, Paquete, Foto, Salida, Usuario, Carrito, CarritoItem, Incluye, NoIncluye, Recomendaciones, Compra, CompraItem 
+from .models import Itinerario, Paquete, Foto, Salida, Usuario, Carrito, CarritoItem, Incluye, NoIncluye, Recomendaciones, Compra, CompraItem, InformacionCompra
 
 admin.site.register(Usuario)
 
@@ -65,3 +65,20 @@ class SalidaAdmin(admin.ModelAdmin):
     list_display = ('paquete', 'fecha')
     list_filter = ('fecha',)
     search_fields = ('paquete__nombre',)
+
+class InformacionCompraInline(admin.StackedInline):  # o TabularInline
+    model = InformacionCompra
+    can_delete = False
+    extra = 0
+
+class CompraAdmin(admin.ModelAdmin):
+    list_display = ("id", "usuario", "total", "estado", "medio_pago", "opcion_pais", "fecha")
+    list_filter = ("estado", "medio_pago", "opcion_pais", "fecha")
+    search_fields = ("usuario__email", "referencia_externa")
+    readonly_fields = ("fecha",)
+    inlines = [CompraItemInline, InformacionCompraInline]  # añadís aquí el inline
+
+@admin.register(InformacionCompra)
+class InformacionCompraAdmin(admin.ModelAdmin):
+    list_display = ("compra", "nombre", "pais", "ciudad", "codigo_postal")
+    search_fields = ("compra__usuario__email", "pais", "ciudad")

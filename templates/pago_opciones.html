@@ -32,13 +32,13 @@
                 <option value="europa">Europa</option>
                 <option value="asia">Asia</option>
                 <option value="africa">África</option>
+                <option value="america">América</option>
+                <option value="oceania">Oceanía</option>
               </select>
             </div>
             <div class="col-6 col-12-small">
               <label for="pais_mundo">País:</label>
-              <select name="pais_mundo" id="pais_mundo">
-                <!-- se llenará dinámicamente -->
-              </select>
+              <select name="pais_mundo" id="pais_mundo"></select>
             </div>
           </div>
         </div>
@@ -75,63 +75,109 @@
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const pais = document.getElementById("pais");
-    const transferenciaRadio = document.querySelector(".metodo-transfer");
-    const totalEl = document.getElementById("total");
-    const enlacePago = document.getElementById("enlace_pago");
-    const transferencia = document.getElementById("transferencia");
-    const montoBase = parseFloat("{{ subtotal|floatformat:2 }}");
-    const descuento = 0.90; // 10% descuento
+document.addEventListener("DOMContentLoaded", function () {
+  const pais = document.getElementById("pais");
+  const transferenciaRadio = document.querySelector(".metodo-transfer");
+  const totalEl = document.getElementById("total");
+  const enlacePago = document.getElementById("enlace_pago");
+  const transferencia = document.getElementById("transferencia");
+  const montoBase = parseFloat("{{ subtotal|floatformat:2 }}");
+  const descuento = 0.90; // 10% descuento
 
-    const selectsMundo = document.getElementById("selects-mundo");
-    const continenteSel = document.getElementById("continente");
-    const paisMundoSel = document.getElementById("pais_mundo");
+  const selectsMundo = document.getElementById("selects-mundo");
+  const continenteSel = document.getElementById("continente");
+  const paisSel = document.getElementById("pais_mundo");
 
-    const paisesPorContinente = {
-      europa: ["España", "Francia", "Italia"],
-      asia: ["Japón", "China", "India"],
-      africa: ["Egipto", "Sudáfrica", "Marruecos"]
-    };
+  // diccionario continente → países
+  const paisesPorContinente = {
+    europa: [
+      "Albania","Alemania","Andorra","Austria","Bélgica","Bosnia y Herzegovina",
+      "Bulgaria","Croacia","Dinamarca","Eslovaquia","Eslovenia","España","Estonia",
+      "Finlandia","Francia","Grecia","Hungría","Irlanda","Islandia","Italia",
+      "Letonia","Liechtenstein","Lituania","Luxemburgo","Macedonia del Norte",
+      "Malta","Mónaco","Montenegro","Noruega","Países Bajos","Polonia","Portugal",
+      "Reino Unido","República Checa","Rumanía","Rusia","San Marino","Serbia",
+      "Suecia","Suiza","Ucrania","Vaticano"
+    ],
+    asia: [
+      "Afganistán","Arabia Saudí","Armenia","Azerbaiyán","Bangladés","Baréin",
+      "Birmania","Brunéi","Bután","Camboya","China","Chipre","Corea del Sur",
+      "Emiratos Árabes Unidos","Filipinas","Georgia","India","Indonesia","Irak",
+      "Irán","Israel","Japón","Jordania","Kazajistán","Kirguistán","Kuwait","Laos",
+      "Líbano","Malasia","Maldivas","Mongolia","Nepal","Omán","Pakistán","Qatar",
+      "Singapur","Sri Lanka","Siria","Tailandia","Tayikistán","Timor-Leste",
+      "Turkmenistán","Turquía","Uzbekistán","Vietnam","Yemen"
+    ],
+    africa: [
+      "Angola","Argelia","Benín","Botsuana","Burkina Faso","Burundi","Cabo Verde",
+      "Camerún","Chad","Comoras","Congo","Costa de Marfil","Egipto","Eritrea",
+      "Esuatini","Etiopía","Gabón","Gambia","Ghana","Guinea","Guinea-Bisáu",
+      "Guinea Ecuatorial","Kenia","Lesoto","Liberia","Libia","Madagascar","Malaui",
+      "Mali","Marruecos","Mauricio","Mauritania","Mozambique","Namibia","Níger",
+      "Nigeria","República Centroafricana","República Democrática del Congo",
+      "Ruanda","Sáhara Occidental","Santo Tomé y Príncipe","Senegal","Seychelles",
+      "Sierra Leona","Somalia","Sudáfrica","Sudán","Sudán del Sur","Tanzania",
+      "Togo","Túnez","Uganda","Yibuti","Zambia","Zimbabue"
+    ],
+    america: [
+      "Antigua y Barbuda","Bahamas","Barbados","Belice","Bolivia","Canadá",
+      "Chile","Colombia","Costa Rica","Cuba","Dominica","Ecuador","El Salvador",
+      "Estados Unidos","Granada","Guatemala","Guyana","Haití","Honduras",
+      "Jamaica","México","Nicaragua","Panamá","Paraguay","Perú",
+      "República Dominicana","San Cristóbal y Nieves","San Vicente y las Granadinas",
+      "Santa Lucía","Surinam","Trinidad y Tobago","Uruguay","Venezuela"
+    ],
+    oceania: [
+      "Australia","Fiyi","Islas Cook","Islas Marshall","Islas Salomón","Kiribati",
+      "Micronesia","Nauru","Nueva Zelanda","Palaos","Papúa Nueva Guinea",
+      "Samoa","Tonga","Tuvalu","Vanuatu"
+    ]
+  };
 
-    function actualizarPaises() {
-      const cont = continenteSel.value;
-      paisMundoSel.innerHTML = "";
+  function actualizarPaises() {
+    const cont = continenteSel.value;
+    paisSel.innerHTML = "";
+    if (paisesPorContinente[cont]) {
       paisesPorContinente[cont].forEach(p => {
         const opt = document.createElement("option");
-        opt.value = p.toLowerCase();
+        opt.value = p;
         opt.textContent = p;
-        paisMundoSel.appendChild(opt);
+        paisSel.appendChild(opt);
       });
     }
+  }
 
-    function actualizarTotal() {
-      if (transferencia.checked) {
-        totalEl.textContent = "$" + (montoBase * descuento).toFixed(2);
-      } else {
-        totalEl.textContent = "$" + montoBase.toFixed(2);
-      }
+  function actualizarTotal() {
+    if (transferencia.checked) {
+      totalEl.textContent = "$" + (montoBase * descuento).toFixed(2);
+    } else {
+      totalEl.textContent = "$" + montoBase.toFixed(2);
     }
+  }
 
-    function actualizarOpciones() {
-      if (pais.value === "mundo") {
-        transferenciaRadio.style.display = "none";
-        enlacePago.checked = true;
-        selectsMundo.style.display = "block";
-        actualizarPaises();
-      } else {
-        transferenciaRadio.style.display = "block";
-        selectsMundo.style.display = "none";
-      }
-      actualizarTotal();
+  function actualizarOpciones() {
+    if (pais.value === "mundo") {
+      // ocultar transferencia para resto del mundo
+      transferenciaRadio.style.display = "none";
+      enlacePago.checked = true;
+      selectsMundo.style.display = "block";
+      actualizarPaises();
+    } else {
+      // mostrar transferencia sólo para Arg/Bra
+      transferenciaRadio.style.display = "block";
+      selectsMundo.style.display = "none";
     }
+    actualizarTotal();
+  }
 
-    pais.addEventListener("change", actualizarOpciones);
-    enlacePago.addEventListener("change", actualizarTotal);
-    transferencia.addEventListener("change", actualizarTotal);
-    continenteSel.addEventListener("change", actualizarPaises);
+  pais.addEventListener("change", actualizarOpciones);
+  enlacePago.addEventListener("change", actualizarTotal);
+  transferencia.addEventListener("change", actualizarTotal);
+  continenteSel.addEventListener("change", actualizarPaises);
 
-    actualizarOpciones();
-  });
+  // inicial
+  actualizarOpciones();
+});
 </script>
+
 {% endblock %}

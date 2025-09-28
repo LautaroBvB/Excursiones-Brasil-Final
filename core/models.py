@@ -107,31 +107,38 @@ class Compra(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, choices=ESTADOS, default="pendiente")
     email = models.EmailField(blank=True, null=True)
-    otro = models.CharField(max_length=255, blank=True, null=True)
 
-
-    medio_pago = models.CharField(
-        max_length=30,
-        choices=[
-            ("stripe", "Stripe"),
-            ("transferencia_arg", "Transferencia Argentina"),
-            ("transferencia_br", "Transferencia Brasil"),
-        ],
-    )
-
-    opcion_pais = models.CharField(
-        max_length=20,
-        choices=[
-            ("argentina", "Argentina"),
-            ("brasil", "Brasil"),
-            ("mundo", "Resto del mundo"),
-        ],
-    )
-
-    referencia_externa = models.CharField(max_length=255, blank=True, null=True)  # id de Stripe, nro comprobante, etc.
+class Compra(models.Model):
+    ESTADOS = [
+        ("pendiente", "Pendiente"),
+        ("aprobado", "Aprobado"),
+        ("fallido", "Fallido"),
+    ]
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="compras")
+    total = models.DecimalField(max_digits=12, decimal_places=2)
+    fecha = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=20, choices=ESTADOS, default="pendiente")
+    email = models.EmailField(blank=True, null=True)
+    medio_pago = models.CharField(max_length=30, choices=[("stripe", "Stripe"), ("transferencia_arg", "Transferencia Argentina"), ("transferencia_br", "Transferencia Brasil")])
+    opcion_pais = models.CharField(max_length=20, choices=[("argentina", "Argentina"), ("brasil", "Brasil"), ("mundo", "Resto del mundo")])
+    referencia_externa = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"Compra {self.id} - {self.usuario.email} - {self.total} ({self.estado})"
+
+
+class InformacionCompra(models.Model):
+    compra = models.OneToOneField(Compra, on_delete=models.CASCADE, related_name='informacion_envio')
+    nombre = models.CharField(max_length=255, blank=True, null=True)
+    direccion_linea1 = models.CharField(max_length=255, blank=True, null=True)
+    direccion_linea2 = models.CharField(max_length=255, blank=True, null=True)
+    ciudad = models.CharField(max_length=100, blank=True, null=True)
+    pais = models.CharField(max_length=100, blank=True, null=True)
+    codigo_postal = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return f"Info de envío de compra {self.compra.id}"
+
 
 class CompraItem(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name="items")
