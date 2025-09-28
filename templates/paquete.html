@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% load static socialaccount %}
+
+{% load i18n %}
+
+{% load static %}
+
+{% block title %}{{ paquete.nombre }}{% endblock %}
+
+{% block extra_head %}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<!-- Wrapper -->
+<div id="wrapper">
+
+	<!-- Main -->
+	<div id="main">
+		<div class="inner">
+
+			<!-- Header -->
+			<header id="header">
+				<a href="{{ request.get_full_path }}" class="logo"><strong>{{ paquete.nombre }}</strong> / Excursiones Brasil</a>
+				<ul class="icons">
+					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+					<li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a>
+					</li>
+					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon brands fa-medium-m"><span class="label">Medium</span></a></li>
+				</ul>
+			</header>
+
+			<!-- Content -->
+			<section>
+				<header class="main">
+					<h1>{{ paquete.nombre }}</h1>
+				</header>
+
+				<!-- Content -->
+				<p>{{ paquete.descripcion }}</p>
+
+				<span class="image fit"><img src="{{ paquete.imagen_portada.url }}" alt="" /></span>
+				<div class="box alt">
+					<div class="row gtr-50 gtr-uniform">
+						{% for foto in paquete.fotos.all %}
+						<div class="col-4">
+							<a href="{{ foto.imagen.url }}" data-lightbox="galeria-{{ paquete.id }}" data-title="{{ foto.descripcion }}">
+								<span class="image fit">
+									<img src="{{ foto.imagen.url }}" alt="{{ foto.descripcion }}">
+								</span>
+							</a>
+						</div>
+						{% empty %}
+						<p>{% trans "No hay fotos para este paquete." %}</p>
+						{% endfor %}
+					</div>
+				</div>
+
+
+				<h4>Itinerario del Tour (horarios aproximados).</h4>
+				<ul>
+					{% for i in paquete.itinerarios.all %}
+					<li>{{ i.nombre }}</li>
+					{% empty %}
+					<li>Este paquete no tiene itinerario cargado.</li>
+					{% endfor %}
+				</ul>
+
+				{% if paquete.incluye.all %}
+				<h4>✅ Incluye:</h4>
+				<ul>
+					{% for inc in paquete.incluye.all %}
+					<li>{{ inc.nombre }}</li>
+					{% endfor %}
+				</ul>
+				{% endif %}
+
+				{% if paquete.no_incluye.all %}
+				<h4>❌ No incluye:</h4>
+				<ul>
+					{% for ni in paquete.no_incluye.all %}
+					<li>{{ ni.nombre }}</li>
+					{% endfor %}
+				</ul>
+				{% endif %}
+
+				<form id="add-to-cart-form" method="post" action="{% url 'paquete' paquete.id %}">
+					{% csrf_token %}
+					<div class="row gtr-uniform">
+						<div class="col-12">
+							<label for="salida_id">{% trans "Elegí una salida" %}</label>
+							<select name="salida_id" id="salida_id" required>
+								{% if salidas %}
+								{% for s in salidas %}
+								<option value="{{ s.id }}">
+									{{ s.fecha|date:"d/m/Y" }}
+								</option>
+								{% endfor %}
+								{% else %}
+								<option value="" disabled selected>{% trans "Sin salidas disponibles" %}</option>
+								{% endif %}
+							</select>
+						</div>
+
+						<div class="col-12">
+							<ul class="actions">
+								<li><input type="submit" value="{% trans 'Agregar al carrito' %}" class="primary" /></li>
+							</ul>
+						</div>
+					</div>
+				</form>
+			</section>
+
+			<section>
+				<header class="major">
+					<h2>Excursiones similares</h2>
+				</header>
+				<div class="posts">
+					{% for sp in similares %}
+					<article>
+						<a href="{% url 'paquete' sp.id %}" class="image">
+							<img src="{{ sp.imagen_perfil.url }}" alt="{{ sp.nombre }}">
+						</a>
+						<h3>{{ sp.nombre }}</h3>
+						<p>{{ sp.descripcion|truncatewords:20 }}</p>
+						<ul class="actions">
+							<li><a href="{% url 'paquete' sp.id %}" class="button">Ver más</a></li>
+						</ul>
+					</article>
+					{% endfor %}
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+<script src="{% static 'assets/js/paquete.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% load static socialaccount %}
+
+{% load i18n %}
+
+{% load static %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block extra_head %}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+{% endblock %}
+
+
+{% block content %}
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+	<!-- Main -->
+	<div id="main">
+		<div class="inner">
+
+			<!-- Header -->
+			<header id="header">
+				<a href="{{ request.get_full_path }}" class="logo"><strong>Inicio</strong> / Excursiones Brasil</a>
+				<ul class="icons">
+					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+					<li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a>
+					</li>
+					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon brands fa-whatsapp"><span class="label">Whatsapp</span></a></li>
+				</ul>
+			</header>
+
+			<!-- Banner -->
+			<section id="s1" class="banner">
+				<div class="content">
+					<header>
+						<h1>Excursiones Brasil</h1>
+					</header>
+					<p>{% trans "Explorá lo mejor de Brasil con nuestras excursiones inolvidables. Playas, selvas, ciudades y cultura... ¡viví la aventura!" %}</p>
+					<ul class="actions">
+						<li><a href="#s2" class="button big">{% trans "¡Ver más!" %}</a></li>
+					</ul>
+				</div>
+				<span class="image object">
+					<img src="{% static 'assets/images/1.jpg' %}" alt="" />
+				</span>
+			</section>
+
+			<section id="s2" class="banner alt">
+				<div class="content">
+					<header>
+						<h1>{% trans "Viví Brasil como nunca antes" %}</h1>
+					</header>
+					<p>{% trans "Sumergite en la esencia de Brasil con excursiones que te conectan con su naturaleza, su historia y su gente. Desde playas escondidas hasta ciudades vibrantes y paisajes inolvidables, cada experiencia está pensada para sorprenderte." %}</p>
+					<ul class="actions">
+						<li><a href="#s3" class="button big">{% trans "¡Ver más!" %}</a></li>
+					</ul>
+				</div>
+				<span class="image object">
+					<img src="{% static 'assets/images/2.jpg' %}" alt="" />
+				</span>
+			</section>
+
+			<section id="s3" class="banner">
+				<div class="content">
+					<header>
+						<h1>{% trans "Tu aventura, nuestra pasión" %}</h1>
+					</header>
+					<p>{% trans "Nos encanta ayudarte a descubrir Brasil de la mejor manera, con guías que conocen cada rincón y un equipo siempre atento para que te sientas cómodo y seguro. ¡Queremos que solo te preocupes por disfrutar!" %}</p>
+					<ul class="actions">
+						<li><a href="#s4" class="button big">{% trans "¡Ver más!" %}</a></li>
+					</ul>
+				</div>
+				<span class="image object">
+					<img src="{% static 'assets/images/3.jpg' %}" alt="" />
+				</span>
+			</section>
+
+			<section id="s4" class="banner alt">
+				<div class="content">
+					<header>
+						<h1>{% trans "Excursiones para todos" %}</h1>
+					</header>
+					<p>{% trans "Desde paseos tranquilos en la playa hasta aventuras llenas de adrenalina, nuestras excursiones predefinidas te permiten elegir la experiencia ideal para disfrutar Brasil al máximo." %}</p>
+					<ul class="actions">
+						<li><a href="#posts" class="button big">{% trans "¡Ir allí!" %}</a></li>
+					</ul>
+				</div>
+				<span class="image object">
+					<img src="{% static 'assets/images/4.jpg' %}" alt="" />
+				</span>
+			</section>
+
+			<!-- Section -->
+			<section>
+				<header class="major" id="posts">
+					<h2>{% trans "Excursiones destacadas" %}</h2>
+				</header>
+				<div class="posts">
+
+					{% for p in paquetes %}
+					<article>
+						<a href="{% url 'paquete' p.pk %}" class="image">
+							{% if p.imagen_perfil %}
+							<img src="{{ p.imagen_perfil.url }}" alt="{{ p.nombre }}">
+							{% endif %}
+						</a>
+						<h3>{{ p.nombre }}</h3>
+						<p>{{ p.descripcion }}</p>
+						<ul class="actions">
+							<li><a href="{% url 'paquete' p.pk %}" class="button">{% trans "Ver más" %}</a></li>
+						</ul>
+					</article>
+					{% endfor %}
+
+				</div>
+			</section>
+
+			<!-- Section -->
+			<section>
+				<header class="major">
+					<h2 id='faq'>{% trans "Preguntas frecuentes" %}</h2>
+				</header>
+				<div class="features">
+					<article>
+						<span class="icon fa-question-circle"></span>
+						<div class="content">
+							<h3>{% trans "¿Cómo reservo un tour?" %}</h3>
+							<p>{% trans "Podés reservar directamente desde la web, eligiendo la fecha y completando tus datos." %}</p>
+							</p>
+						</div>
+					</article>
+					<article>
+						<span class="icon solid fa-credit-card"></span>
+						<div class="content">
+							<h3>{% trans "¿Qué medios de pago aceptan?" %}</h3>
+							<p>{% trans "Aceptamos tarjetas de crédito, débito, transferencia y pagos por billeteras virtuales." %}</p>
+						</div>
+					</article>
+					<article>
+						<span class="icon solid fa-clock"></span>
+						<div class="content">
+							<h3>{% trans "¿Cuánto duran los recorridos?" %}</h3>
+							<p>{% trans "Depende del tour, pero en promedio duran entre 3 y 6 horas." %}</p>
+						</div>
+					</article>
+					<article>
+						<span class="icon solid fa-users"></span>
+						<div class="content">
+							<h3>{% trans "¿Los grupos son grandes?" %}</h3>
+							<p>{% trans "No, trabajamos con grupos reducidos para garantizar una experiencia personalizada." %}</p>
+						</div>
+					</article>
+					<article>
+						<span class="icon solid fa-globe"></span>
+						<div class="content">
+							<h3>{% trans "¿El guía habla otros idiomas?" %}</h3>
+							<p>{% trans "Sí: español/inglés; portugués u otros según disponibilidad. Pedilo al reservar (puede tener costo)." %}</p>
+						</div>
+					</article>
+					<article>
+						<span class="icon solid fa-undo"></span>
+						<div class="content">
+							<h3>{% trans "¿Puedo cancelar mi reserva?" %}</h3>
+							<p>{% trans "Sí, podés cancelarla sin cargo hasta 48 horas antes del inicio del tour." %}</p>
+						</div>
+					</article>
+				</div>
+			</section>
+
+			<section>
+				<h2 id="contacto">{% trans "Contactanos" %}</h2>
+				<form method="post" action="#">
+					{% csrf_token %}
+					<div class="row gtr-uniform">
+						<!-- Nombre / Apellido en 2 columnas -->
+						<div class="col-6 col-12-xsmall">
+							<input type="text" name="nombre" id="nombre" value="" placeholder="{% trans 'Nombre' %}" />
+						</div>
+						<div class="col-6 col-12-xsmall">
+							<input type="text" name="apellido" id="apellido" value="" placeholder="{% trans 'Apellido' %}" />
+						</div>
+
+						<!-- Email a ancho completo -->
+						<div class="col-12">
+							<input type="email" name="demo-email" id="demo-email" value="" placeholder="{% trans 'Email' %}" />
+						</div>
+
+						<!-- Mensaje -->
+						<div class="col-12">
+							<textarea name="mensaje" id="mensaje" placeholder="{% trans '¡Contactanos!' %}" rows="6"></textarea>
+						</div>
+
+						<!-- Acciones -->
+						<div class="col-12">
+							<ul class="actions">
+								<li><input type="submit" value="{% trans 'Enviar mensaje' %}" class="primary" /></li>
+								<li><input type="reset" value="Reset" /></li>
+							</ul>
+						</div>
+					</div>
+				</form>
+			</section>
+
+
+		</div>
+	</div>
+
+
+
+</div>
+
+{% block extra_scripts %}
+<script>
+	$(function () {
+		$(document).on('click', 'a.button.big, a[href^="#"]', function (e) {
+			const target = $(this).attr('href');
+			if (target && target.startsWith('#') && target.length > 1) {
+				const $el = $(target);
+				if ($el.length) {
+					e.preventDefault();
+					$('html, body').animate({ scrollTop: $el.offset().top }, 800);
+				}
+			}
+		});
+	});
+</script>
+
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,13 @@
+Implementar tema de las edades en la pasarela de pagos. Menores no pagan o pagan a medias, aclarar eso en la pasarela de pago.
+
+
+Notificar todos los medios de pago. Moneda en dólar. Belo, DolarApp (Plataforma de pago)
+
+Una vez finalizada la compra redirigir a un chat de whatsapp
+
+Una vez finalizada la compra se necesita generar un comprobante para constatar la veracidad del pago de la excursión
+
+-------------------------------
+Icono hamburguesa para contraer el aside en position fixed
+
+-----------------------------------

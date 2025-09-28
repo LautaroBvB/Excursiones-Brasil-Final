@@ -1,0 +1,373 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-26 16:17-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\templates\base.html:58
+msgid "Menu"
+msgstr "Menu"
+
+#: .\templates\base.html:65
+msgid "Inicio"
+msgstr "Início"
+
+#: .\templates\base.html:72 .\templates\faq.html:5 .\templates\faq.html:10
+#: .\templates\index.html:103
+msgid "Preguntas frecuentes"
+msgstr "Perguntas frequentes"
+
+#: .\templates\base.html:79 .\templates\contacto.html:5
+#: .\templates\contacto.html:10
+msgid "Contacto"
+msgstr "Contate-nos"
+
+#: .\templates\base.html:84
+msgid "Carrito"
+msgstr "Carrinho"
+
+#: .\templates\base.html:85
+msgid "Cerrar sesión"
+msgstr "Sair"
+
+#: .\templates\base.html:87
+msgid "Iniciar sesión"
+msgstr "Conecte-se"
+
+#: .\templates\base.html:91
+msgid "Idioma"
+msgstr "Linguagem"
+
+#: .\templates\base.html:95
+msgid "Español"
+msgstr "Espanhol"
+
+#: .\templates\base.html:105
+msgid "Portugués"
+msgstr "Português"
+
+#: .\templates\base.html:113
+msgid "Inglés"
+msgstr "Inglês"
+
+#: .\templates\base.html:152 .\templates\paquete.html:135
+msgid "Inicia sesión con sólo un click"
+msgstr "Faça login com apenas um clique"
+
+#: .\templates\base.html:153
+msgid "Elegí tu red social e iniciá sesión en segundos"
+msgstr "Escolha sua rede social e faça login em segundos."
+
+#: .\templates\base.html:163 .\templates\paquete.html:146
+msgid "Cancelar"
+msgstr "Cancelar"
+
+#: .\templates\carrito.html:36
+msgid "Tu carrito"
+msgstr "Seu carrinho"
+
+#: .\templates\carrito.html:54
+msgid "Salida"
+msgstr "Saída"
+
+#: .\templates\carrito.html:85
+msgid "Resumen del pedido"
+msgstr "Resumo do pedido"
+
+#: .\templates\carrito.html:90
+msgid "Artículos"
+msgstr "Artigos"
+
+#: .\templates\carrito.html:94
+msgid "Subtotal"
+msgstr "Subtotal"
+
+#: .\templates\carrito.html:100
+msgid "Total"
+msgstr "Total"
+
+#: .\templates\carrito.html:107
+msgid "Pagar"
+msgstr "Pagar"
+
+#: .\templates\carrito.html:122 .\templates\carrito.html:152
+msgid "Tu carrito está vacío"
+msgstr "Seu carrinho está vazio"
+
+#: .\templates\carrito.html:123 .\templates\carrito.html:153
+msgid "Todavía no agregaste ningún paquete. Explorá y elegí el tuyo 👇"
+msgstr "Você ainda não adicionou nenhum pacote. Navegue e escolha o seu 👇"
+
+#: .\templates\carrito.html:127 .\templates\carrito.html:158
+msgid "ver paquetes"
+msgstr "ver pacotes"
+
+#: .\templates\carrito.html:132 .\templates\carrito.html:164
+msgid "Compra segura"
+msgstr "Compra segura"
+
+#: .\templates\carrito.html:133 .\templates\carrito.html:165
+msgid "Confirmación rápida"
+msgstr "Confirmação rápida"
+
+#: .\templates\carrito.html:134 .\templates\carrito.html:166
+msgid "Soporte 24/7"
+msgstr "Suporte 24/7"
+
+#: .\templates\carrito.html:199
+msgid "¿Eliminar del carrito?"
+msgstr "Remover do carrinho?"
+
+#: .\templates\carrito.html:200
+msgid "Esta acción quitará el paquete del carrito."
+msgstr "Esta ação removerá o pacote do carrinho."
+
+#: .\templates\carrito.html:203
+msgid "Sí, eliminar"
+msgstr "Sim, excluir"
+
+#: .\templates\contacto.html:18 .\templates\index.html:184
+msgid "Nombre"
+msgstr "Nome"
+
+#: .\templates\contacto.html:21 .\templates\index.html:187
+msgid "Apellido"
+msgstr "Sobrenome"
+
+#: .\templates\contacto.html:26 .\templates\index.html:192
+msgid "Email"
+msgstr "Email"
+
+#: .\templates\contacto.html:31 .\templates\index.html:197
+msgid "¡Contactanos!"
+msgstr "Contate-nos!"
+
+#: .\templates\contacto.html:37 .\templates\index.html:203
+msgid "Enviar mensaje"
+msgstr "Enviar mensagem"
+
+#: .\templates\contacto.html:38
+msgid "Reset"
+msgstr "Reset"
+
+#: .\templates\faq.html:17 .\templates\index.html:109
+msgid "¿Cómo reservo un tour?"
+msgstr "Como faço para reservar um passeio?"
+
+#: .\templates\faq.html:18 .\templates\index.html:110
+msgid ""
+"Podés reservar directamente desde la web, eligiendo la fecha y completando "
+"tus datos."
+msgstr ""
+"Você pode reservar diretamente pelo site, escolhendo a data e preenchendo "
+"seus dados."
+
+#: .\templates\faq.html:25 .\templates\index.html:117
+msgid "¿Qué medios de pago aceptan?"
+msgstr "Quais métodos de pagamento vocês aceitam?"
+
+#: .\templates\faq.html:26 .\templates\index.html:118
+msgid ""
+"Aceptamos tarjetas de crédito, débito, transferencia y pagos por billeteras "
+"virtuales."
+msgstr ""
+"Aceitamos cartões de crédito e débito, transferências e pagamentos por "
+"carteira virtual."
+
+#: .\templates\faq.html:33 .\templates\index.html:124
+msgid "¿Cuánto duran los recorridos?"
+msgstr "Quanto tempo duram os passeios?"
+
+#: .\templates\faq.html:34 .\templates\index.html:125
+msgid "Depende del tour, pero en promedio duran entre 3 y 6 horas."
+msgstr "Depende do passeio, mas em média eles duram entre 3 e 6 horas."
+
+#: .\templates\faq.html:41 .\templates\index.html:131
+msgid "¿Los grupos son grandes?"
+msgstr "Os grupos são grandes?"
+
+#: .\templates\faq.html:42 .\templates\index.html:132
+msgid ""
+"No, trabajamos con grupos reducidos para garantizar una experiencia "
+"personalizada."
+msgstr ""
+"Não, trabalhamos com grupos pequenos para garantir uma experiência "
+"personalizada."
+
+#: .\templates\faq.html:49 .\templates\index.html:138
+msgid "¿El guía habla otros idiomas?"
+msgstr "O guia fala outras línguas?"
+
+#: .\templates\faq.html:50
+msgid "Sí, contamos con guías en varios idiomas."
+msgstr "Sim, temos guias em vários idiomas."
+
+#: .\templates\faq.html:57 .\templates\index.html:145
+msgid "¿Puedo cancelar mi reserva?"
+msgstr "Posso cancelar minha reserva?"
+
+#: .\templates\faq.html:58 .\templates\index.html:146
+msgid ""
+"Sí, podés cancelarla sin cargo hasta 48 horas antes del inicio del tour."
+msgstr ""
+"Sim, você pode cancelar gratuitamente até 48 horas antes do início do "
+"passeio."
+
+#: .\templates\index.html:45
+msgid ""
+"Explorá lo mejor de Brasil con nuestras excursiones inolvidables. Playas, "
+"selvas, ciudades y cultura... ¡viví la aventura!"
+msgstr ""
+"Explore o melhor do Brasil com nossas excursões inesquecíveis. Praias, "
+"selvas, cidades e cultura... viva a aventura!"
+
+#: .\templates\index.html:47 .\templates\index.html:62
+#: .\templates\index.html:77
+msgid "¡Ver más!"
+msgstr "Veja mais!"
+
+#: .\templates\index.html:58
+msgid "Viví Brasil como nunca antes"
+msgstr "Eu vivi o Brasil como nunca antes"
+
+#: .\templates\index.html:60
+msgid ""
+"Sumergite en la esencia de Brasil con excursiones que te conectan con su "
+"naturaleza, su historia y su gente. Desde playas escondidas hasta ciudades "
+"vibrantes y paisajes inolvidables, cada experiencia está pensada para "
+"sorprenderte."
+msgstr ""
+"Mergulhe na essência do Brasil com excursões que conectam você com sua "
+"natureza, história e pessoas. De praias escondidas a cidades vibrantes e "
+"paisagens inesquecíveis, cada experiência é pensada para te surpreender."
+
+#: .\templates\index.html:73
+msgid "Tu aventura, nuestra pasión"
+msgstr "Sua aventura, nossa paixão"
+
+#: .\templates\index.html:75
+msgid ""
+"Nos encanta ayudarte a descubrir Brasil de la mejor manera, con guías que "
+"conocen cada rincón y un equipo siempre atento para que te sientas cómodo y "
+"seguro. ¡Queremos que solo te preocupes por disfrutar!"
+msgstr ""
+"Adoramos ajudar você a descobrir o Brasil da melhor maneira possível, com "
+"guias que conhecem cada canto e uma equipe sempre atenta para que você se "
+"sinta confortável e seguro. Queremos que você se preocupe apenas em se "
+"divertir!"
+
+#: .\templates\index.html:88
+msgid "Excursiones para todos"
+msgstr "Excursões para todos"
+
+#: .\templates\index.html:90
+msgid ""
+"Desde paseos tranquilos en la playa hasta aventuras llenas de adrenalina, "
+"nuestras excursiones predefinidas te permiten elegir la experiencia ideal "
+"para disfrutar Brasil al máximo."
+msgstr ""
+"De caminhadas tranquilas na praia a aventuras cheias de adrenalina, nossas "
+"excursões pré-projetadas permitem que você escolha a experiência perfeita "
+"para aproveitar o Brasil ao máximo."
+
+#: .\templates\index.html:92
+msgid "¡Ir allí!"
+msgstr "Vá lá!"
+
+#: .\templates\index.html:139
+msgid ""
+"Sí: español/inglés; portugués u otros según disponibilidad. Pedilo al "
+"reservar (puede tener costo)."
+msgstr ""
+"Sim: Espanhol/Inglês; Português ou outros, dependendo da disponibilidade. "
+"Solicite no momento da reserva (sujeito a taxas)."
+
+#: .\templates\index.html:155
+msgid "Excursiones destacadas"
+msgstr "Excursões em destaque"
+
+#: .\templates\index.html:169
+msgid "Ver más"
+msgstr "Ver mais"
+
+#: .\templates\index.html:178
+msgid "Contactanos"
+msgstr "Contate-nos"
+
+#: .\templates\paquete.html:59
+msgid "No hay fotos para este paquete."
+msgstr "Não há fotos para este pacote."
+
+#: .\templates\paquete.html:65
+msgid "Características del paquete"
+msgstr "Características do pacote"
+
+#: .\templates\paquete.html:70
+msgid "Este paquete no tiene características cargadas."
+msgstr "Este pacote não possui recursos carregados."
+
+#: .\templates\paquete.html:78
+msgid "Elegí una salida"
+msgstr "Eu escolhi uma saída"
+
+#: .\templates\paquete.html:83
+msgid "cupos"
+msgstr "cotas"
+
+#: .\templates\paquete.html:87
+msgid "Sin salidas disponibles"
+msgstr "Nenhuma saída disponível"
+
+#: .\templates\paquete.html:94
+msgid "Agregar al carrito"
+msgstr "Adicionar ao carrinho"
+
+#: .\templates\paquete.html:136
+msgid ""
+"Para agregar productos al carrito debes iniciar sesión o registrarte, ¡te "
+"toma segundos!"
+msgstr ""
+"Para adicionar produtos ao seu carrinho, você precisa fazer login ou se "
+"cadastrar. Leva apenas alguns segundos!"
+
+#: .\templates\paquete.html:159
+msgid "¡Agregado al carrito!"
+msgstr "Adicionado ao carrinho!"
+
+#: .\templates\paquete.html:160
+msgid "El paquete fue agregado exitosamente."
+msgstr "O pacote foi adicionado com sucesso."
+
+#: .\templates\paquete.html:162
+msgid "Ir al carrito"
+msgstr "Ir para o carrinho"
+
+#: .\templates\paquete.html:163
+msgid "Seguir explorando"
+msgstr "Continue explorando"
+
+#: .\templates\paquete.html:177 .\templates\paquete.html:185
+msgid "Ups"
+msgstr "Ops"
+
+#: .\templates\paquete.html:178
+msgid "No pudimos agregar el paquete."
+msgstr "Não foi possível adicionar o pacote."
+
+#: .\templates\paquete.html:186
+msgid "Error de red. Intentalo nuevamente."
+msgstr "Erro de rede. Tente novamente."

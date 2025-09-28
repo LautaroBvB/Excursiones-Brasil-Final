@@ -1,0 +1,254 @@
+{% load static %}
+
+{% load i18n %}
+
+{% load static socialaccount %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}Inicio{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+    <style>
+        /* separa los botones del modal */
+        .swal2-popup .swal2-actions {
+            display: flex;
+            /* ya lo es, pero lo reforzamos */
+            gap: .75rem !important;
+            /* espacio entre Confirmar y Cancelar */
+            justify-content: center;
+        }
+
+        /* por si tu .button trae márgenes propios */
+        .swal2-popup .swal2-actions .button {
+            margin: 0;
+        }
+
+        /* fallback si tu navegador ignora gap en flex (poco probable) */
+        .swal2-popup .swal2-actions .button+.button {
+            margin-left: .75rem;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="is-preload">
+
+    <!-- Wrapper (REQUERIDO) -->
+    <div id="wrapper">
+
+        <!-- Main primero -->
+        <div id="main">
+            <div class="inner">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+
+        <!-- Sidebar después -->
+        <div id="sidebar">
+            <div class="inner">
+                <nav id="menu">
+                    <header class="major">
+                        {% if request.user.is_authenticated %}
+                        <h2>{{ request.user.first_name|default:request.user.username }}</h2>
+                        {% else %}
+                        <h2>{% trans "Menu" %}</h2>
+                        {% endif %}
+                    </header>
+                    <ul>
+                        {# Inicio: si ya estás en inicio, scrollea arriba; si no, navega a la url de inicio #}
+                        <li>
+                            <a href="{% if request.resolver_match.url_name == 'inicio' %}#{% else %}{% url 'inicio' %}{% endif %}">
+                                {% trans "Inicio" %}
+                            </a>
+                        </li>
+
+                        {# Contacto: en inicio -> #contacto; en otras páginas -> /form/ (o tu vista de contacto) #}
+                        <li>
+                            <a href="{% if request.resolver_match.url_name == 'inicio' %}#contacto{% else %}{% url 'contacto' %}{% endif %}">
+                                {% trans "Contacto" %}
+                            </a>
+                        </li>
+
+                        {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'carrito' %}">{% trans "Carrito" %}</a></li>
+                        <li><a href="{% url 'mis_compras' %}">{% trans "Mis Compras" %}</a></li>
+                        <li><a href="{% url 'account_logout' %}?next={{ request.path }}">{% trans "Cerrar sesión" %}</a></li>
+                        {% else %}
+                        <li><a href="#" id="login">{% trans "Iniciar sesión" %}</a></li>
+                        {% endif %}
+
+                        {% get_current_language as CURRENT_LANGUAGE %}
+                        {% with lang=CURRENT_LANGUAGE|slice:":2" %}
+                        <li>
+                            <span class="opener">{% trans "Idioma" %}</span>
+                            <ul>
+                                {% if lang != 'es' %}
+                                <li>
+                                    <a href="#" onclick="event.preventDefault(); document.getElementById('lang-es').submit();">
+                                        {% trans "Español" %}
+                                    </a>
+                                    <form id="lang-es" action="{% url 'set_language' %}" method="post" style="display:none;">
+                                        {% csrf_token %}<input type="hidden" name="language" value="es"><input type="hidden" name="next" value="{{ request.path }}">
+                                    </form>
+                                </li>
+                                {% endif %}
+
+                                {% if lang != 'pt' %}
+                                <li>
+                                    <a href="#" onclick="event.preventDefault(); document.getElementById('lang-pt').submit();">
+                                        {% trans "Portugués" %}
+                                    </a>
+                                    <form id="lang-pt" action="{% url 'set_language' %}" method="post" style="display:none;">
+                                        {% csrf_token %}<input type="hidden" name="language" value="pt-br"><input type="hidden" name="next" value="{{ request.path }}">
+                                    </form>
+                                </li>
+                                {% endif %}
+
+                                {% if lang != 'en' %}
+                                <li>
+                                    <a href="#" onclick="event.preventDefault(); document.getElementById('lang-en').submit();">
+                                        {% trans "Inglés" %}
+                                    </a>
+                                    <form id="lang-en" action="{% url 'set_language' %}" method="post" style="display:none;">
+                                        {% csrf_token %}<input type="hidden" name="language" value="en"><input type="hidden" name="next" value="{{ request.path }}">
+                                    </form>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                        {% endwith %}
+                    </ul>
+
+                </nav>
+
+                <section>
+                    <header class="major">
+                        <h2>Información útil</h2>
+                    </header>
+                    <p>En Excursiones Brasil queremos que disfrutes tu viaje con total tranquilidad.
+                        Aquí encontrarás enlaces rápidos a nuestras políticas, traslados y preguntas frecuentes
+                        para que tu experiencia sea clara y cómoda desde el inicio.</p>
+                    <ul class="contact">
+                        <li class="icon solid fa-gavel"><a href="{% url 'politicas' %}">Políticas</a></li>
+                        <li class="icon solid fa-question-circle"><a href="{% if request.resolver_match.url_name == 'inicio' %}#faq{% else %}{% url 'faq' %}{% endif %}">Preguntas frecuentes</a></li>
+                        <li class="icon solid fa-envelope"><a href="mailto:excursiones_brasil@hotmail.com">excursiones_brasil@hotmail.com</a></li>
+                        <li class="icon solid fa-phone">
+                            <a href="https://wa.me/5493534243436?text=Hola%2C%20estoy%20interesado%20en%20recibir%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20paquetes%20tur%C3%ADsticos" target="_blank">
+                                +54 9 (353) 424-3436
+                            </a>
+                        </li>
+                        <li class="icon solid fa-home">
+                            Cabo Adrian Bustos 1065<br>
+                            Villa María, Córdoba
+                        </li>
+                    </ul>
+                </section>
+
+            </div>
+        </div>
+
+    </div><!-- /#wrapper -->
+
+    <a href="https://wa.me/3534243436?text=Hola%2C%20estoy%20interesado%20en%20recibir%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20paquetes%20tur%C3%ADsticos" target="_blank" style="position:fixed; bottom:20px; right:20px; z-index:1000;">
+        <img src="{% static 'assets/images/whatsapp.png' %}" alt="WhatsApp" style="width:60px; height:60px;">
+    </a>
+
+    <!-- scripts globales -->
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/js/browser.min.js' %}"></script>
+    <script src="{% static 'assets/js/breakpoints.min.js' %}"></script>
+    <script src="{% static 'assets/js/util.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <!-- Script que mantiene el sidebar contraído por defecto -->
+    <script>
+        window.addEventListener('load', () => {
+            const sb = document.getElementById('sidebar');
+            if (!sb) return;
+            // forzar cerrado al iniciar
+            sb.classList.add('inactive');
+        });
+
+        // si el breakpoint reabre al cambiar tamaño, volvemos a cerrarlo
+        window.addEventListener('resize', () => {
+            document.getElementById('sidebar')?.classList.add('inactive');
+        });
+    </script>
+
+    <script>
+        document.getElementById("login").addEventListener("click", function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                html: `
+				<h3>{% trans "Inicia sesión con sólo un click" %}</h3>
+                <p>{% trans "Elegí tu red social e iniciá sesión en segundos" %}</p>
+				<ul class="icons" style="display:flex; gap:15px; justify-content:center; list-style:none; padding:0; margin:20px 0;">
+					<li><a href="{% provider_login_url 'google' %}" class="icon brands fa-google"><span class="label">Google</span></a></li>
+					<li><a href="#" class="icon brands fa-apple"><span class="label">Apple</span></a></li>
+					<li><a href="#" class="icon brands fa-facebook"><span class="label">Facebook</span></a></li>
+					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+				</ul>
+                `,
+                showConfirmButton: false,
+                showCancelButton: true,
+                cancelButtonText: '{% trans "Cancelar" %}',
+                buttonsStyling: false,
+                customClass: {
+                    cancelButton: 'button'
+                },
+
+            })
+        })
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+    <!-- link a sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Usa un mixin para que TODOS los Swal.fire hereden estos defaults
+        window.Swal = Swal.mixin({
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'button',
+                cancelButton: 'button'
+            },
+            didOpen: (popup) => {
+                // Quita las clases que traen estilos propios de SweetAlert2
+                popup.querySelectorAll('.swal2-styled, .swal2-confirm, .swal2-cancel')
+                    .forEach(btn => {
+                        btn.classList.remove('swal2-styled', 'swal2-confirm', 'swal2-cancel');
+                        // Asegurá que quede sólo tu clase .button
+                        if (!btn.classList.contains('button')) btn.classList.add('button');
+                    });
+            }
+        });
+    </script>
+
+    <script>
+        // Defaults globales para TODOS los Swal.fire
+        window.Swal = Swal.mixin({
+            buttonsStyling: false,
+            customClass: { confirmButton: 'button', cancelButton: 'button' },
+            focusConfirm: false,          // no enfocar el botón confirm al abrir
+            didOpen: (popup) => {
+                // quitar clases de swal para que no aporten estilos propios
+                popup.querySelectorAll('.swal2-styled, .swal2-confirm, .swal2-cancel')
+                    .forEach(btn => {
+                        btn.classList.remove('swal2-styled', 'swal2-confirm', 'swal2-cancel');
+                        if (!btn.classList.contains('button')) btn.classList.add('button');
+                        btn.blur(); // quita cualquier foco residual
+                    });
+            }
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

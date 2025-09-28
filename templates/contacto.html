@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans "Contacto" %}{% endblock %}
+
+{% block content %}
+
+<div id="main">
+  <div class="inner">
+
+    <!-- Header -->
+    <header id="header">
+      <a href="{{ request.get_full_path }}" class="logo"><strong>Contacto</strong> / Excursiones Brasil</a>
+      <ul class="icons">
+        <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+        <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+        <li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a>
+        </li>
+        <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+        <li><a href="#" class="icon brands fa-whatsapp"><span class="label">Whatsapp</span></a></li>
+      </ul>
+    </header>
+
+    <section>
+      <form method="post" action="#">
+        {% csrf_token %}
+        <div class="row gtr-uniform">
+          <!-- Nombre / Apellido en 2 columnas -->
+          <div class="col-6 col-12-xsmall">
+            <input type="text" name="nombre" id="nombre" value="" placeholder="{% trans 'Nombre' %}" />
+          </div>
+          <div class="col-6 col-12-xsmall">
+            <input type="text" name="apellido" id="apellido" value="" placeholder="{% trans 'Apellido' %}" />
+          </div>
+
+          <!-- Email a ancho completo -->
+          <div class="col-12">
+            <input type="email" name="demo-email" id="demo-email" value="" placeholder="{% trans 'Email' %}" />
+          </div>
+
+          <!-- Mensaje -->
+          <div class="col-12">
+            <textarea name="mensaje" id="mensaje" placeholder="{% trans '¡Contactanos!' %}" rows="6"></textarea>
+          </div>
+
+          <!-- Acciones -->
+          <div class="col-12">
+            <ul class="actions">
+              <li><input type="submit" value="{% trans 'Enviar mensaje' %}" class="primary" /></li>
+              <li><input type="reset" value="{% trans 'Reset' %}" /></li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>
+{% endblock %}

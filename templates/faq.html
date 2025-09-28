@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans "Preguntas frecuentes" %}{% endblock %}
+
+{% block content %}
+
+<div id="main">
+  <div class="inner">
+
+    <!-- Header -->
+    <header id="header">
+      <a href="{{ request.get_full_path }}" class="logo"><strong>Preguntas frecuentes</strong> / Excursiones Brasil</a>
+      <ul class="icons">
+        <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+        <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+        <li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a>
+        </li>
+        <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+        <li><a href="#" class="icon brands fa-whatsapp"><span class="label">Whatsapp</span></a></li>
+      </ul>
+    </header>
+
+
+    <section>
+      <div class="features">
+        <article>
+          <span class="icon fa-question-circle"></span>
+          <div class="content">
+            <h3>{% trans "¿Cómo reservo un tour?" %}</h3>
+            <p>{% trans "Podés reservar directamente desde la web, eligiendo la fecha y completando tus datos." %}</p>
+          </div>
+        </article>
+
+        <article>
+          <span class="icon solid fa-credit-card"></span>
+          <div class="content">
+            <h3>{% trans "¿Qué medios de pago aceptan?" %}</h3>
+            <p>{% trans "Aceptamos tarjetas de crédito, débito, transferencia y pagos por billeteras virtuales." %}</p>
+          </div>
+        </article>
+
+        <article>
+          <span class="icon solid fa-clock"></span>
+          <div class="content">
+            <h3>{% trans "¿Cuánto duran los recorridos?" %}</h3>
+            <p>{% trans "Depende del tour, pero en promedio duran entre 3 y 6 horas." %}</p>
+          </div>
+        </article>
+
+        <article>
+          <span class="icon solid fa-users"></span>
+          <div class="content">
+            <h3>{% trans "¿Los grupos son grandes?" %}</h3>
+            <p>{% trans "No, trabajamos con grupos reducidos para garantizar una experiencia personalizada." %}</p>
+          </div>
+        </article>
+
+        <article>
+          <span class="icon solid fa-globe"></span>
+          <div class="content">
+            <h3>{% trans "¿El guía habla otros idiomas?" %}</h3>
+            <p>{% trans "Sí, contamos con guías en varios idiomas." %}</p>
+          </div>
+        </article>
+
+        <article>
+          <span class="icon solid fa-undo"></span>
+          <div class="content">
+            <h3>{% trans "¿Puedo cancelar mi reserva?" %}</h3>
+            <p>{% trans "Sí, podés cancelarla sin cargo hasta 48 horas antes del inicio del tour." %}</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load i18n %}
+
+{% block title %}Carrito{% endblock %}
+
+{% block extra_head %}
+<style>
+  #carrito .align-right {
+    text-align: right;
+  }
+
+  #carrito .price {
+    font-weight: 700;
+  }
+
+  #carrito .qty-controls {
+    margin-top: .5rem;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+  }
+
+  #carrito .qty-controls .button.small {
+    min-width: 2.4rem;
+    text-align: center;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="main">
+  <div class="inner">
+    <section id="carrito">
+      <header class="major">
+        <h2>{% trans "Tu carrito" %}</h2>
+      </header>
+
+      {% if items %}
+      <div id="cart-grid" class="row gtr-50">
+        <div class="col-8 col-12-medium">
+          <div class="box">
+            {% for it in items %}
+            <div class="row gtr-75 carrito-row" id="row-{{ it.id }}">
+              <div class="col-3 col-4-small">
+                <span class="image fit">
+                  <img src="{{ it.paquete.imagen_perfil.url }}" alt="{{ it.paquete.nombre }}">
+                </span>
+              </div>
+              <div class="col-9 col-8-small">
+                <h3><a href="{% url 'paquete' it.paquete.id %}">{{ it.paquete.nombre }}</a></h3>
+                <p>
+                  {{ it.paquete.ciudad.nombre }}
+                  {% if it.salida_id %} · <strong>{% trans "Salida" %}:</strong> {{ it.salida.fecha|date:'d/m/Y' }}{% endif %}
+                </p>
+
+                <div class="row gtr-10">
+                  <div class="col-6 col-12-xsmall">
+                    <div class="price" id="unitline-{{ it.id }}" data-unitprice="{{ it.paquete.precio }}">
+                      $ {{ it.paquete.precio|floatformat:2 }} × <span id="qty-text-{{ it.id }}">{{ it.cantidad }}</span>
+                    </div>
+
+                    <ul class="actions small qty-controls" data-item="{{ it.id }}" data-url="{% url 'carrito_item_update' it.id %}">
+                      <li><a class="button small qty-minus">−</a></li>
+                      <li><span class="button small disabled qty-amount" id="qty-{{ it.id }}">{{ it.cantidad }}</span></li>
+                      <li><a class="button small qty-plus">+</a></li>
+                      <li><a class="button small icon solid fa-trash qty-remove" title="Eliminar"></a></li>
+                    </ul>
+                  </div>
+
+                  <div class="col-6 col-12-xsmall align-right">
+                    <strong id="item-total-{{ it.id }}">$ {{ it.item_total|floatformat:2 }}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% if not forloop.last %}
+            <hr id="sep-{{ it.id }}" />{% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="col-4 col-12-medium">
+          <div class="box">
+            <h3>{% trans "Resumen del pedido" %}</h3>
+            <div class="table-wrapper">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>{% trans "Artículos" %}</td>
+                    <td class="align-right" id="summary-products">{{ totales.productos }}</td>
+                  </tr>
+                  <tr>
+                    <td>{% trans "Subtotal" %}</td>
+                    <td class="align-right" id="summary-subtotal">$ {{ totales.subtotal|floatformat:2 }}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td><strong>{% trans "Total" %}</strong></td>
+                    <td class="align-right"><strong id="summary-total">$ {{ totales.subtotal|floatformat:2 }}</strong></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <ul class="actions">
+              <li>
+                <a href="{% url 'checkout_opciones' %}" class="button primary fit">
+                  {% trans "Pagar" %}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <template id="tpl-empty-cart">
+        <section>
+          <div class="box">
+            <div class="row gtr-50 gtr-uniform">
+              <div class="col-12">
+                <span class="image fit" style="width:clamp(260px,45vw,520px);margin:0 auto;">
+                  <img src="{% static 'assets/images/empty-cart.png' %}" alt="carrito vacío">
+                </span>
+              </div>
+              <div class="col-12" style="text-align:center">
+                <h2>{% trans "Tu carrito está vacío" %}</h2>
+                <p>{% trans "Todavía no agregaste ningún paquete. Explorá y elegí el tuyo 👇" %}</p>
+                <ul class="actions special">
+                  <li>
+                    <a href="{% url 'inicio' %}#posts" class="button primary icon solid fa-compass">
+                      {% trans "ver paquetes" %}
+                    </a>
+                  </li>
+                </ul>
+                <ul class="icons" style="margin-top:1rem;display:flex;gap:12px;justify-content:center;list-style:none;">
+                  <li><span class="icon solid fa-shield-alt"></span>&nbsp;{% trans "Compra segura" %}</li>
+                  <li><span class="icon solid fa-clock"></span>&nbsp;{% trans "Confirmación rápida" %}</li>
+                  <li><span class="icon solid fa-headset"></span>&nbsp;{% trans "Soporte 24/7" %}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </template>
+      {% else %}
+      <section>
+        <div class="box">
+          <div class="row gtr-50 gtr-uniform">
+            <div class="col-12">
+              <span class="image fit" style="width:clamp(260px, 45vw, 520px); margin:0 auto;">
+                <img src="{% static 'assets/images/empty-cart.png' %}" alt="carrito vacío">
+              </span>
+            </div>
+
+            <div class="col-12" style="text-align:center">
+              <h2>{% trans "Tu carrito está vacío" %}</h2>
+              <p>{% trans "Todavía no agregaste ningún paquete. Explorá y elegí el tuyo 👇" %}</p>
+
+              <ul class="actions special">
+                <li>
+                  <a href="{% url 'inicio' %}#posts" class="button primary icon solid fa-compass">
+                    {% trans "ver paquetes" %}
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="icons" style="margin-top:1rem; display:flex; gap:12px; justify-content:center; list-style:none;">
+                <li><span class="icon solid fa-shield-alt"></span>&nbsp;{% trans "Compra segura" %}</li>
+                <li><span class="icon solid fa-clock"></span>&nbsp;{% trans "Confirmación rápida" %}</li>
+                <li><span class="icon solid fa-headset"></span>&nbsp;{% trans "Soporte 24/7" %}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {% endif %}
+    </section>
+  </div>
+</div>
+
+
+<script>
+  (function () {
+    // usa SweetAlert2 ya cargado en base.html
+    function getCookie(name) {
+      const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+      return m ? m.pop() : '';
+    }
+    function money(n) { return '$ ' + Number(n).toFixed(2); }
+
+    function postAction(url, action) {
+      return fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: 'action=' + action
+      }).then(r => r.json());
+    }
+
+    function confirmDeleteDialog() {
+      return Swal.fire({
+        html: `
+				<h3>{% trans "¿Eliminar del carrito?" %}</h3>
+        <p>{% trans "Esta acción quitará el paquete del carrito." %}</p>
+      `,
+        showCancelButton: true,
+        confirmButtonText: '{% trans "Sí, eliminar" %}',
+        cancelButtonText: 'Cancelar',
+        buttonsStyling: false,
+        customClass: {
+          confirmButton: 'button',
+          cancelButton: 'button'
+        },
+      });
+    }
+
+    document.addEventListener('click', async function (e) {
+      const plus = e.target.closest('.qty-plus');
+      const minus = e.target.closest('.qty-minus');
+      const remove = e.target.closest('.qty-remove');
+      if (!plus && !minus && !remove) return;
+
+      const wrap = e.target.closest('.qty-controls');
+      const url = wrap.dataset.url;
+      const id = wrap.dataset.item;
+
+      // decidir acción
+      let action = 'inc';
+      if (plus) action = 'inc';
+      if (minus) {
+        const qtyNow = parseInt(document.getElementById('qty-' + id).textContent, 10);
+        if (qtyNow <= 1) {
+          const res = await confirmDeleteDialog();
+          if (!res.isConfirmed) return;
+          action = 'remove';
+        } else {
+          action = 'dec';
+        }
+      }
+      if (remove) {
+        const res = await confirmDeleteDialog();
+        if (!res.isConfirmed) return;
+        action = 'remove';
+      }
+
+      // ejecutar y actualizar UI
+      try {
+        const data = await postAction(url, action);
+
+        // resumen
+        document.getElementById('summary-subtotal').textContent = money(data.subtotal);
+        document.getElementById('summary-total').textContent = money(data.subtotal);
+        document.getElementById('summary-products').textContent = data.productos;
+
+        // item removido
+        if (data.removed) {
+          document.getElementById('row-' + id)?.remove();
+          document.getElementById('sep-' + id)?.remove();
+
+          // si no quedan productos → swap al empty state
+          if (data.productos === 0) {
+            const grid = document.getElementById('cart-grid');
+            const tpl = document.getElementById('tpl-empty-cart');
+            if (grid && tpl) grid.replaceWith(tpl.content.cloneNode(true));
+          } else {
+            // actualizar totales si aún quedan items
+            document.getElementById('summary-subtotal').textContent = money(data.subtotal);
+            document.getElementById('summary-total').textContent = money(data.subtotal);
+            document.getElementById('summary-products').textContent = data.productos;
+          }
+          return;
+        }
+
+        // actualizar cantidades e importes
+        document.getElementById('qty-' + id).textContent = data.cantidad;
+        document.getElementById('qty-text-' + id).textContent = data.cantidad;
+        document.getElementById('item-total-' + id).textContent = money(data.item_total);
+      } catch (err) {
+        console.error(err);
+        Swal.fire({ icon: 'error', title: 'Ups', text: 'No pudimos actualizar el carrito.' });
+      }
+    });
+  })();
+</script>
+{% endblock %}

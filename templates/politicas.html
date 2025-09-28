@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% load static socialaccount %}
+
+{% load i18n %}
+
+{% load static %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block extra_head %}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+{% endblock %}
+
+
+{% block content %}
+
+<div id="main">
+    <div class="inner">
+
+        <!-- Header -->
+        <header id="header">
+            <a href="{{ request.get_full_path }}" class="logo"><strong>Politicas</strong> / Excursiones Brasil</a>
+            <ul class="icons">
+                <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+                <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                <li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a>
+                </li>
+                <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                <li><a href="#" class="icon brands fa-whatsapp"><span class="label">Whatsapp</span></a></li>
+            </ul>
+        </header>
+
+
+        <section>
+            <h2>1. Formas de Pago</h2>
+            <div class="box">
+                <ul>
+                    <li><strong>Argentina:</strong> Transferencia bancaria sin cargo (48 a 72 hs hábiles para acreditación, con descuento). Stripe y MercadoPago con recargo.</li>
+                    <li><strong>Brasil:</strong> Transferencia bancaria sin cargo (48 a 72 hs hábiles para acreditación, con descuento). Stripe y MercadoPago Brasil con recargo.</li>
+                    <li><strong>Otros países:</strong> Stripe como medio de pago.</li>
+                </ul>
+            </div>
+
+            <h2>2. Cancelaciones y Reembolsos</h2>
+            <p>Las cancelaciones pueden realizarse dentro de las <strong>48 horas posteriores a la compra</strong>. En ese caso se aplicará reembolso total utilizando el mismo medio de pago.</p>
+            <p>Pasado ese plazo, la compra no es reembolsable.</p>
+
+            <h2>3. Cambios de Fecha</h2>
+            <div class="box">
+                <ul>
+                    <li>Se permiten únicamente para la <strong>misma excursión</strong>, en fecha posterior y según disponibilidad.</li>
+                    <li>Si la nueva fecha tiene un costo superior (ej. temporada alta), el cliente deberá abonar la diferencia.</li>
+                    <li>El cambio debe solicitarse al menos <strong>48 h antes de la fecha original</strong>.</li>
+                </ul>
+            </div>
+
+            <h2>4. Privacidad y Datos Personales</h2>
+            <p>En Excursiones Brasil valoramos la seguridad de tus datos:</p>
+            <ul>
+                <li>Recopilamos solo la información necesaria para procesar reservas y pagos.</li>
+                <li>No compartimos datos con terceros salvo procesadores de pago (Stripe, MercadoPago).</li>
+                <li>Podés solicitar acceso, corrección o eliminación de tus datos en cualquier momento.</li>
+            </ul>
+
+            <h2>5. Acceso a la Cuenta</h2>
+            <p>El acceso se realiza exclusivamente mediante <strong>Google, Apple, Facebook o Twitter</strong>.
+                El cliente es responsable de mantener segura su sesión.</p>
+
+            <h2>6. Limitación de Responsabilidad</h2>
+            <p>Excursiones Brasil actúa como intermediario en la organización de excursiones.
+                No nos responsabilizamos por causas de fuerza mayor (clima, huelgas, transporte).
+                En esos casos se ofrecerá reprogramación o nota de crédito.</p>
+
+            <h2>7. Contacto</h2>
+            <p>Ante cualquier consulta, podés escribirnos a: <a href="mailto:contacto@excursionesbrasil.com">contacto@excursionesbrasil.com</a></p>
+
+        </section>
+
+    </div>
+</div>
+
+{% endblock %}
