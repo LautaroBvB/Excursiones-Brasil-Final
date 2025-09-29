@@ -46,7 +46,13 @@
                                 {% endif %}
                             </code>
                         </li>
+                        {% if compra.medio_pago == "transferencia_br" %}
+                        <li><code>Método de pago: Transferencia Brasil</code></li>
+                        {% elif compra.medio_pago == "transferencia_arg" %}
+                        <li><code>Método de pago: Transferencia Argentina</code></li>
+                        {% else %}
                         <li><code>Método de pago: {{ compra.medio_pago|capfirst }}</code></li>
+                        {% endif %}
                         <li><code>País: {{ compra.informacion_envio.pais }}</code></li>
                     </ul>
                 </div>

@@ -56,6 +56,40 @@
           </div>
         </div>
 
+        <!-- Formulario de datos de envío para transferencia, inicialmente oculto -->
+        <div class="col-12" id="form-transferencia" style="display:none; margin-top:2rem;">
+          <!-- ⚠️ ahora los inputs están dentro del form principal -->
+          <div class="row">
+            <div class="col-6 col-12-small">
+              <label for="nombre">
+                <h4>Nombre</h4>
+                <input type="text" id="nombre" name="nombre" placeholder="Nombre">
+              </label>
+            </div>
+            <div class="col-6 col-12-small">
+              <label for="direccion">
+                <h4>Dirección</h4>
+                <input type="text" id="direccion" name="direccion" placeholder="Dirección">
+              </label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6 col-12-small">
+              <label for="ciudad">
+                <h4>Ciudad</h4>
+                <input type="text" id="ciudad" name="ciudad" placeholder="Ciudad">
+              </label>
+            </div>
+            <div class="col-6 col-12-small">
+              <label for="codigo_postal">
+                <h4>Código postal</h4>
+                <input type="text" id="codigo_postal" name="codigo_postal" placeholder="Código postal">
+              </label>
+            </div>
+          </div>
+        </div>
+
         <div class="col-12 col-12-small">
           <hr>
           <h4>Total a pagar:</h4>
@@ -74,6 +108,8 @@
   </div>
 </div>
 
+
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const pais = document.getElementById("pais");
@@ -87,6 +123,9 @@
     const selectsMundo = document.getElementById("selects-mundo");
     const continenteSel = document.getElementById("continente");
     const paisSel = document.getElementById("pais_mundo");
+
+    // 👉 nuevo: formulario de transferencia oculto
+    const formTransferencia = document.getElementById("form-transferencia");
 
     // diccionario continente → países
     const paisesPorContinente = {
@@ -167,17 +206,24 @@
         transferenciaRadio.style.display = "block";
         selectsMundo.style.display = "none";
       }
+      // mostrar/ocultar formulario de transferencia
+      if (transferencia.checked && pais.value !== "mundo") {
+        formTransferencia.style.display = "block";
+      } else {
+        formTransferencia.style.display = "none";
+      }
       actualizarTotal();
     }
 
     pais.addEventListener("change", actualizarOpciones);
-    enlacePago.addEventListener("change", actualizarTotal);
-    transferencia.addEventListener("change", actualizarTotal);
+    enlacePago.addEventListener("change", actualizarOpciones);
+    transferencia.addEventListener("change", actualizarOpciones);
     continenteSel.addEventListener("change", actualizarPaises);
 
     // inicial
     actualizarOpciones();
   });
 </script>
+
 
 {% endblock %}

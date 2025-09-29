@@ -12,6 +12,7 @@ from django.utils.timezone import localdate
 from django.conf import settings
 import stripe
 from core.utils.codigos_iso import CODIGOS_ISO
+from django.core.mail import send_mail
 
 
 def paquete(request, pk):
@@ -178,6 +179,14 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 import stripe
 
+from decimal import Decimal
+from django.db.models import F, ExpressionWrapper, DecimalField
+from django.http import JsonResponse, HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.urls import reverse
+import stripe
+
 @login_required
 def pago_opciones(request):
     carrito, _ = Carrito.objects.get_or_create(usuario=request.user)
@@ -200,7 +209,7 @@ def pago_opciones(request):
         request.session['opcion_pais'] = pais
         request.session['pais_mundo'] = pais_mundo
 
-        # ---------- Transferencia ----------
+                # ---------- Transferencia ----------
         if medio == 'transferencia':
             if pais not in ['argentina', 'brasil']:
                 return JsonResponse({"error": "Transferencia no disponible"}, status=400)
@@ -225,14 +234,49 @@ def pago_opciones(request):
                     precio_unitario=it.paquete.precio,
                 )
 
-            carrito.items.all().delete()
+            # crear información de envío
+            InformacionCompra.objects.create(
+                compra=compra,
+                nombre=request.POST.get("nombre"),
+                direccion_linea1=request.POST.get("direccion"),
+                ciudad=request.POST.get("ciudad"),
+                codigo_postal=request.POST.get("codigo_postal"),
+                pais=pais.title()
+            )
 
-            # redirigir a una página con instrucciones de transferencia
+            carrito.items.all().delete()
+            
+            nombre = request.POST.get("nombre")
+            cbu = "1234567890123456789012"  # o el que generes dinámicamente
+
+            html = f"""
+                <h1>Hola {nombre}</h1>
+                <p>¡Gracias por elegirnos!</p>
+                <p>Para completar tu reserva te compartimos nuestro <strong>CBU: {cbu}</strong>.</p>
+                <p>Por favor realizá la transferencia y envianos el comprobante a 
+                <strong>excursionesbrasil@gmail.com</strong> o por WhatsApp al 
+                <strong>3534-136384</strong>.</p>
+                <p>Es necesario que en el <strong>asunto</strong> o <strong>motivo</strong> del mensaje aclares <em>(Comprobante de transferencia)</em> para facilitar y agilizar los tiempos de verificación.</p>
+                <p>Recordá que disponés de <strong>72 horas</strong> para enviarnos el comprobante; pasado ese plazo la orden se cancelará automáticamente.</p>
+                <p><strong>Este es un mensaje automático</strong>, no es necesario que lo respondas.</p>
+                <p><strong>Saludos cordiales,</strong><br>El equipo de Excursiones Brasil</p>
+                """
+
+            send_mail(
+                subject='Instrucciones para tu pago',
+                message='Versión texto plano del mensaje…',  # fallback
+                from_email='empleosvm518@gmail.com',
+                recipient_list=[request.user.email],
+                html_message=html
+            )
+
+            # devolver un HttpResponse con instrucciones de transferencia
             return HttpResponse(
                 f"Gracias por tu compra #{compra.id}. "
                 "Para completar el pago realiza una transferencia a la cuenta bancaria indicada. "
                 "Recibirás un email con los datos de la transferencia."
             )
+
 
         # ---------- Stripe ----------
         if medio == 'stripe':
