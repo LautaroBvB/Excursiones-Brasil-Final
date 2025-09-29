@@ -157,8 +157,10 @@ def contacto(request):
 def faq(request):
     return render(request, "faq.html")
 
+@login_required
 def mis_compras(request):
-    return render(request, "mis_compras.html")
+    compras = Compra.objects.filter(usuario=request.user).order_by('-fecha')  # ejemplo
+    return render(request, "mis_compras.html", {"compras": compras})
 
 def politicas(request):
     return render(request, "politicas.html")
@@ -167,6 +169,14 @@ def politicas(request):
 
 # configurando metodos de pago
 from core.utils.codigos_iso import CODIGOS_ISO  # al inicio de views.py
+
+from decimal import Decimal
+from django.db.models import F, ExpressionWrapper, DecimalField
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse
+import stripe
 
 @login_required
 def pago_opciones(request):
@@ -186,9 +196,45 @@ def pago_opciones(request):
         medio = request.POST.get('medio_pago')
         pais_mundo = request.POST.get('pais_mundo')  # país dentro de resto del mundo
 
-        # 👉 guardás en la sesión la opción elegida
+        # guardás en la sesión la opción elegida (para Stripe)
         request.session['opcion_pais'] = pais
+        request.session['pais_mundo'] = pais_mundo
 
+        # ---------- Transferencia ----------
+        if medio == 'transferencia':
+            if pais not in ['argentina', 'brasil']:
+                return JsonResponse({"error": "Transferencia no disponible"}, status=400)
+
+            # crear la compra
+            compra = Compra.objects.create(
+                usuario=request.user,
+                email=request.user.email,
+                total=subtotal,
+                estado="pendiente",  # hasta que vos la confirmes
+                medio_pago=f"transferencia_{pais}",
+                opcion_pais=pais,
+            )
+
+            # crear items de la compra
+            for it in qs:
+                CompraItem.objects.create(
+                    compra=compra,
+                    paquete=it.paquete,
+                    salida=it.salida,
+                    cantidad=it.cantidad,
+                    precio_unitario=it.paquete.precio,
+                )
+
+            carrito.items.all().delete()
+
+            # redirigir a una página con instrucciones de transferencia
+            return HttpResponse(
+                f"Gracias por tu compra #{compra.id}. "
+                "Para completar el pago realiza una transferencia a la cuenta bancaria indicada. "
+                "Recibirás un email con los datos de la transferencia."
+            )
+
+        # ---------- Stripe ----------
         if medio == 'stripe':
             stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -233,6 +279,7 @@ def pago_opciones(request):
 
 
 
+
 @login_required
 def pago_exitoso(request):
     session_id = request.GET.get('session_id')
@@ -272,8 +319,6 @@ def pago_exitoso(request):
     # recuperar del session qué opción había elegido
     opcion_pais = request.session.pop('opcion_pais', 'mundo')
     pais_mundo = request.session.pop('pais_mundo', None)
-
-    print(pais_mundo)
     carrito = request.user.carrito
     items = list(carrito.items.select_related('paquete'))
     subtotal = sum(Decimal(it.paquete.precio) * it.cantidad for it in items)

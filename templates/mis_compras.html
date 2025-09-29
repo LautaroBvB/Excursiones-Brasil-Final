@@ -1,39 +1,102 @@
 {% extends "base.html" %}
 
 {% load static socialaccount %}
-
 {% load i18n %}
-
 {% load static %}
 
-{% block title %}Inicio{% endblock %}
+{% block title %}Mis compras{% endblock %}
 
 {% block extra_head %}
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 {% endblock %}
 
-
 {% block content %}
 <div id="main">
     <div class="inner">
 
         <!-- Header -->
-        <header id="header">
+        <header id="header" style="margin-bottom: 3vh">
             <a href="{{ request.get_full_path }}" class="logo"><strong>Mis compras</strong> / Excursiones Brasil</a>
             <ul class="icons">
                 <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
                 <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-                <li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a>
-                </li>
+                <li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
                 <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
                 <li><a href="#" class="icon brands fa-whatsapp"><span class="label">Whatsapp</span></a></li>
             </ul>
         </header>
 
+        {% for compra in compras %}
+        <div class="box" style="background-color: whitesmoke;">
+            <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                <div class="col-6 col-12-small">
+                    <h4>Compra #{{ compra.id }}</h4>
+                    <ul style="list-style: none;">
+                        <li><code>Fecha: {{ compra.fecha|date:"d/m/Y" }}</code></li>
+                        <li>
+                            <code>
+                                Estado:
+                                {% if compra.estado == "aprobado" %}
+                                Aprobado ✅
+                                {% elif compra.estado == "pendiente" %}
+                                Pendiente ⏰
+                                {% else %}
+                                {{ compra.estado }}
+                                {% endif %}
+                            </code>
+                        </li>
+                        <li><code>Método de pago: {{ compra.medio_pago|capfirst }}</code></li>
+                        <li><code>País: {{ compra.informacion_envio.pais }}</code></li>
+                    </ul>
+                </div>
 
+                <div class="col-6 col-12-small">
+                    <h4>Envío</h4>
+                    <ul style="list-style: none;">
+                        <li><code>Nombre: {{ compra.informacion_envio.nombre }}</code></li>
+                        <li><code>Dirección: {{ compra.informacion_envio.direccion_linea1 }}</code></li>
+                        <li><code>Ciudad: {{ compra.informacion_envio.ciudad }}</code></li>
+                        <li><code>Código Postal: {{ compra.informacion_envio.codigo_postal }}</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-12 col-12-small">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Paquete</th>
+                            <th>Salida</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in compra.items.all %}
+                        <tr>
+                            <td>{{ item.paquete.nombre }}</td>
+                            <td>{{ item.salida }}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td>${{ item.precio_unitario }}</td>
+                            <td>${{ item.subtotal }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" style="text-align:right;"><strong>Total:</strong></td>
+                            <td>${{ compra.total }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        {% empty %}
+        <p>No tenés compras registradas.</p>
+        {% endfor %}
 
     </div>
 </div>
-
 {% endblock %}

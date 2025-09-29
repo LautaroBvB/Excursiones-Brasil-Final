@@ -76,7 +76,7 @@ class Salida(models.Model):
     fecha = models.DateField()
 
     def __str__(self):
-        return f"{self.paquete.nombre} - {self.fecha}"
+        return f"{self.fecha}"
 
 class CarritoItem(models.Model):
     carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name='items')
@@ -93,20 +93,6 @@ class CarritoItem(models.Model):
         if self.salida_id:
             return f"{self.paquete.nombre} ({self.salida.fecha}) x{self.cantidad} en carrito de {self.carrito.usuario.username}"
         return f"{self.paquete.nombre} x{self.cantidad} en carrito de {self.carrito.usuario.username}"
-
-
-class Compra(models.Model):
-    ESTADOS = [
-        ("pendiente", "Pendiente"),
-        ("aprobado", "Aprobado"),
-        ("fallido", "Fallido"),
-    ]
-
-    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="compras")
-    total = models.DecimalField(max_digits=12, decimal_places=2)
-    fecha = models.DateTimeField(auto_now_add=True)
-    estado = models.CharField(max_length=20, choices=ESTADOS, default="pendiente")
-    email = models.EmailField(blank=True, null=True)
 
 class Compra(models.Model):
     ESTADOS = [
